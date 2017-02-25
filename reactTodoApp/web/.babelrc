@@ -1,0 +1,8 @@
+{
+"presets": 
+    [
+        "react-native",
+        "es2015",
+        "react"
+    ]
+}
