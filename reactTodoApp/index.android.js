@@ -69,15 +69,6 @@ export default class reactTodoApp extends React.Component{
         todoSource: this.state.todoSource.cloneWithRows(this.items)
       });
     });
-
-    //when status is changed/updated
-    this.itemsRef.on('child_changed', (dataSnapshot) => {
-      var db = dataSnapshot.val();
-      var updatedStatus = db.status;
-      this.setState({
-        status: this.state.status
-      });
-    });
   }
 
   addItem(){
