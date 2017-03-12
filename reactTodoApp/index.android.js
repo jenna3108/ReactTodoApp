@@ -32,7 +32,7 @@ import {
   FooterTab
    } from 'native-base';
 import styles from './style';
-import Icon from 'react-native-vector-icons/FontAwesome';
+// import Icon from 'react-native-vector-icons/FontAwesome';
 
 var Firebase = require('firebase');
 
@@ -54,9 +54,16 @@ export default class reactTodoApp extends React.Component{
   }
 
   componentDidMount() {
+
+    // listen for firebase updates 
+    this.listenForTasks(this.itemsRef);
+
     //when a todo is added
     this.itemsRef.on('child_added', (dataSnapshot) => {
-      this.items.push({id: dataSnapshot.key(), text: dataSnapshot.val()});
+      this.items.push({
+        id: dataSnapshot.key(), 
+        text: dataSnapshot.val()
+      });
       this.setState({
         todoSource: this.state.todoSource.cloneWithRows(this.items)
       });
@@ -69,6 +76,14 @@ export default class reactTodoApp extends React.Component{
         todoSource: this.state.todoSource.cloneWithRows(this.items)
       });
     });
+
+    //when a todo is updated
+    this.itemsRef.on('child_changed', (dataSnapshot) => {
+      this.items.update({text: dataSnapshot.val()});
+      this.setState({
+        todoSource: this.state.todoSource.cloneWithRows(this.items)
+      })
+    });
   }
 
   addItem(){
@@ -78,24 +93,27 @@ export default class reactTodoApp extends React.Component{
         status: 'new'
       });
       this.setState({
-        newTodo : ''
+        newTodo : '',
+        isCompleted: false
       });
+      alert("Task added successfully");
     }
   }
 
   deleteItem(rowData){
     this.itemsRef.child(rowData.id).remove();
+    alert("Task removed successfully");
   }
 
   isCompleted(rowData){
-    // if (this.state.status != 'new'){
-      this.itemsRef.child(rowData.id).update({
+    this.itemsRef.forEach((child) => {
+      child(rowData.id).update({
         status: 'completed'
       });
       this.setState({
         isCompleted: true
-      })
-    // }
+      });
+    });
   }
 
   render() {
