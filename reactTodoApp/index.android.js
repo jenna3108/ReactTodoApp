@@ -55,9 +55,6 @@ export default class reactTodoApp extends React.Component{
 
   componentDidMount() {
 
-    // listen for firebase updates 
-    this.listenForTasks(this.itemsRef);
-
     //when a todo is added
     this.itemsRef.on('child_added', (dataSnapshot) => {
       this.items.push({
